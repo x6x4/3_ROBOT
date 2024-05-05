@@ -1,17 +1,16 @@
-
-
-
 #include <fstream>
+#include "decls.hpp"
+#include "runtime.hpp"
+
 int main() {
-    std::fstream programm;
     
-    AST ast = parse(programm); 
+    AST ast(std::ifstream("lab_exit.txt")); 
 
     std::fstream labyrinth;
 
-    API_Labyirinth api_lab(labyrinth);
+    API_LAB apilab(std::ifstream("lab.lb"));
 
-    Runtime runtime(ast, api_lab);
+    Runtime runtime(ast, apilab);
 
-    runtime.execute();
+    runtime.exec();
 }

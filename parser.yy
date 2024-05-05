@@ -9,14 +9,21 @@
 #include "decls.hpp"
 %}
 
-
 %token BOOL INT CELL
-%token TRUE FALSE UNDEF
-%token EMPTY WALL BOX EXIT
+%token TRUE FALSE BOOL_UNDEF
+%token EMPTY WALL BOX EXIT UNDEF
 %token INF NEG_INF NAN
+
+%token FORWARD
+%token BACKWARD
+%token LOAD
+%token DROP
+%token LOOK
+%token TEST
 
 %token<std::string> ID
 %token<std::string> INT_VALUE
+%token<std::string> BOOL_VALUE
 
 %token SUM_UP_ARR
 
@@ -25,11 +32,11 @@
 %token LESS GREATER EQUAL LEQ GEQ
 %token IF THEN ELSE WHILE
 
-%nterm<Node* >
+%nterm<Statement* >
     arith_expr
     arith_val
 
-%nterm<std::vector<Node*>> statements program
+%nterm<std::vector<Statement*>> statements program
 %start program
 
 %%
@@ -37,7 +44,7 @@
 program: statements
         ;
 
-statements: statement EOL { $$ = std::vector<Node*>{$1}; }
+statements: statement EOL { $$ = std::vector<Statement*>{$1}; }
            | statement EOL statements { $3.push_back($1); $$ = std::move($3); }
            ;
 
@@ -48,7 +55,7 @@ statement: spaces
           | expr
           ;
 
-params_decl: TYPE ID (',' ID)* { std::cout << "params_decl"; }
+params_decl: TYPE ID (',' ID)* { $$ = new ParamDecl{$1, $3}; }
             ;
 
 assignment: bool_assign
@@ -56,16 +63,16 @@ assignment: bool_assign
           | cell_assign
           ;
 
-bool_assign: BOOL ID '=' BOOL_VALUE { std::cout << "bool_assign"; }
+bool_assign: BOOL ID '=' BOOL_VALUE { $$ = new BoolAssign{$2, $4}; }
             ;
 
-int_assign: INT ID '=' INT_VALUE { std::cout << "int_assign"; }
+int_assign: INT ID '=' INT_VALUE { $$ = new IntAssign{$2, $4}; }
           ;
 
-cell_assign: CELL ID '=' CELL_VALUE { std::cout << "cell_assign"; }
+cell_assign: CELL ID '=' CELL_VALUE { $$ = new CellAssign{$2, $4}; }
            ;
 
-func_call: FUNC_NAME '(' PARAM_DECL ')' { std::cout << "func_call"; }
+func_call: FUNC_NAME '(' PARAM_DECL ')' { $$ = new FuncCall{$1, $3}; }
          ;
 
 expr: arith_expr
@@ -75,7 +82,7 @@ expr: arith_expr
 arith_expr: '-' arith_val
           | arith_val '+' arith_expr { $$ = new AddExpr{$1, $3} }
           | arith_val '-' arith_expr {}
-          | SUM_UP_ARR { std::cout << "arith_expr"; }
+          | SUM_UP_ARR { $$ = new SumUpArr{}; }
           ;
 
 log_expr: log_val
@@ -83,7 +90,7 @@ log_expr: log_val
         | xor_expr
         ;
 
-comp_expr: arith_expr '<' '>' arith_expr { std::cout << "comp_expr"; }
+comp_expr: arith_expr '<' '>' arith_expr { $$ = new CompExpr{$1, $3};  }
          ;
 
 xor_expr: LOG_VAL '^' LOG_VAL { $$ = new XorExpr{$1, $3}; }
