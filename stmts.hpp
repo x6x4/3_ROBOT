@@ -22,6 +22,10 @@ public:
     }
 };
 
+class VarDeclStmt : public Statement {
+    //AssignType assignType;
+};
+
 class AssignStmt : public Statement {
     AssignType assignType;
 };
@@ -69,7 +73,7 @@ public:
 };
 
 
-class ParamDecl : public FnStmt {
+class VarDecl : public FnStmt {
 
 };
 

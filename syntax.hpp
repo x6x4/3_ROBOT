@@ -1,6 +1,7 @@
 
 enum class StatementType{
     Operator,
+    VarDecl, 
     Assign,
     Expr,
     CntlFlow,

@@ -31,6 +31,9 @@ private:
 
     void exec_stmt(Statement *stmt) {
         switch (stmt->kind) {
+            case StatementType::VarDecl: 
+                m_symtab.data[stmt->lhs->name].push_back(stmt->rhs->eval());
+            break;
             case StatementType::Assign:
                 m_symtab.data[stmt->lhs->name].push_back(stmt->rhs->eval());
                 /*Value val = eval_expr(stmt.right);
