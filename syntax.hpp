@@ -29,6 +29,8 @@ enum class ExprType {
 enum class OperType {
     FORWARD,
     BACKWARD,
+    LEFT, 
+    RIGHT,
     LOAD,
     DROP,
     LOOK,

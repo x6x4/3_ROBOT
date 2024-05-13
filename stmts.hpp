@@ -6,19 +6,21 @@
 #include <cstddef>
 #include <functional>
 #include <map>
+#include <unordered_map>
 #include <vector>
 
+class Field;
+class RobotPos;
 
-using OperSubr = std::function<void()>;
-using FnTable = std::map<OperType, OperSubr>;
+using OperSubr = std::function<void(Field& field, RobotPos &rob_pos)>;
+using FnTable = std::unordered_map<OperType, OperSubr>;
 
 class OperStmt : public Statement {
     OperType oper;
-    std::function<void()> action;
 
 public: 
-    void act(const FnTable& fn_table) {
-        fn_table.at(oper)();
+    void act(const FnTable& fn_table, Field& field, RobotPos &rob_pos) {
+        fn_table.at(oper)(field, rob_pos);
     }
 };
 

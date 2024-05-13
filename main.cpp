@@ -1,6 +1,7 @@
 #include <fstream>
-#include "decls.hpp"
 #include "runtime.hpp"
+#include "my_api/my_api.hpp"
+
 
 int main() {
     
@@ -8,7 +9,7 @@ int main() {
 
     std::fstream labyrinth;
 
-    API_LAB apilab(std::ifstream("lab.lb"));
+    MY_API apilab(std::ifstream("lab.lb"));
 
     Runtime runtime(ast, apilab);
 
